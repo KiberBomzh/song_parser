@@ -1,0 +1,15 @@
+[package]
+name = "song_parser_lib"
+version = "0.1.0"
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "song_parser_lib"
+crate-type = ["cdylib"]
+path = "bindings/lib.rs"
+
+[dependencies]
+pyo3 = "0.28.2"
+serde_yaml = "0.9.34"
+songbook = { path = "../songbook-tui" }
