@@ -11,6 +11,9 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+dependencies = [
+    "requests>=2.32.4",
+]
 
 [project.scripts]
 song-parser = "src.cli:main"
