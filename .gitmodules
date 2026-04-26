@@ -1,0 +1,4 @@
+[submodule "songbook-tui"]
+	path = songbook-tui
+	url = https://github.com/KiberBomzh/songbook-tui
+	branch = develop

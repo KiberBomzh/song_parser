@@ -12,4 +12,4 @@ path = "bindings/lib.rs"
 [dependencies]
 pyo3 = "0.28.2"
 serde_yaml = "0.9.34"
-songbook = { path = "../songbook-tui" }
+songbook = { path = "songbook-tui" }
