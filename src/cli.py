@@ -1,5 +1,4 @@
 from sys import argv
-from song_parser_lib import song_from_text
 
 from src.parsers import akkords_pro, amdm_ru
 
@@ -15,19 +14,15 @@ def main():
     elif url.startswith('http://'):
         url = url[len('http://'):]
 
+
     if url.startswith('akkords.pro'):
-        text = akkords_pro.from_url(url)
+        yaml = akkords_pro.from_url(url)
     elif url.startswith('amdm.ru'):
-        text = amdm_ru.from_url(url)
+        yaml = amdm_ru.from_url(url)
     else:
         print("Unknown url!")
         return 1
 
-    yaml = song_from_text(
-        text,
-        artist = 'example',
-        title = 'something',
-    )
     print(yaml, flush = True)
 
 
