@@ -1,7 +1,7 @@
 from sys import argv
 from song_parser_lib import song_from_text
 
-from . import akkords_pro
+from src.parsers import akkords_pro, amdm_ru
 
 
 def main():
@@ -17,6 +17,8 @@ def main():
 
     if url.startswith('akkords.pro'):
         text = akkords_pro.from_url(url)
+    elif url.startswith('amdm.ru'):
+        text = amdm_ru.from_url(url)
     else:
         print("Unknown url!")
         return 1
