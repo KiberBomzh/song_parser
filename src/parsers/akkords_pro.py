@@ -1,15 +1,6 @@
 from src import session
 from song_parser_lib import song_from_text
-
-
-def clean_tags(text: str) -> str:
-    while text.find('<') != -1 and text.find('>') != -1:
-        start = text.find('<')
-        end = text.find('>')
-
-        text = text[:start] + text[end + 1:]
-
-    return text
+from bs4 import BeautifulSoup
 
 
 def from_url(url: str) -> str:
@@ -17,18 +8,33 @@ def from_url(url: str) -> str:
 
     resp = session.get(url)
     resp.raise_for_status()
-    content = resp.text
-    
-    with open('x.html', 'w') as f:
-        f.write(content)
+    src = resp.text
 
-    start = content.find('<p class="chords">')
-    end = content[start:].find('</p>') + start
-    text = content[start:end]
-
-    text = clean_tags(text).strip()
-    yaml = song_from_text(text,
-        artist = 'artist',
-        title = 'title',
-    )
+    (artist, title, content) = parse(src)
+    yaml = song_from_text(content, artist, title)
     return yaml
+
+
+def parse(src: str) -> (str, str, str):
+    soup = BeautifulSoup(src, 'html.parser')
+    
+    content_el = soup.find('p', class_ = 'chords')
+    content = content_el.text.replace('—', '-')
+
+    
+    title_text = soup.title.text
+    
+    title_end = title_text.find(':')
+    if title_end == -1:
+        title = 'title'
+    else:
+        title = title_text[:title_end].strip()
+
+    artist_start = title_text.find('•')
+    if artist_start == -1:
+        artist = 'artist'
+    else:
+        artist = title_text[artist_start + 1:].strip()
+
+
+    return (artist, title, content)
