@@ -17,7 +17,7 @@ CHORDS = '{C}|'
 TEXT = '{T}|'
 
 
-def from_url(url: str) -> (str, str, str):
+def from_url(url: str) -> str:
     url = 'https://' + url
     
     resp = session.get(url)
