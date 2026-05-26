@@ -22,5 +22,4 @@ song-parser = "src.cli:main"
 [tool.maturin]
 python-packages = [
     "src",
-    "src.parsers",
 ]

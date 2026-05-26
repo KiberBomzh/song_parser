@@ -42,4 +42,70 @@ mod song_parser_lib {
 
         Ok(song_string)
     }
+
+    #[pyfunction]
+    fn can_save() -> bool {
+        #[cfg(target_os = "android")]
+        return false;
+
+        #[cfg(not(target_os = "android"))]
+        return true;
+    }
+
+    #[pyfunction]
+    fn save(yaml: String) -> PyResult<()> {
+        use songbook::song_library::get_lib_path;
+        use std::fs;
+        use std::io::Write;
+
+        if !can_save() {
+            return Err(PyTypeError::new_err("Cannot save songs on android!"));
+        }
+
+        let lib_path = if let Ok(p) = get_lib_path() {p}
+            else { return Err(PyTypeError::new_err("Cannot get base lib path!"))};
+
+        let song_parser_dir = lib_path.join("song-parser");
+        if !song_parser_dir.exists() {
+            fs::create_dir_all(&song_parser_dir)?;
+        }
+
+        let title = if let Some(t) = get_title_from_yaml(&yaml) {t}
+            else { "title".to_string() };
+
+        let artist = if let Some(a) = get_artist_from_yaml(&yaml) {a}
+            else { "artist".to_string() };
+
+        let song_name = format!("{title} - {artist}");
+        let song_path = get_free_path(song_parser_dir.join(&song_name), &song_name);
+
+        let mut file = fs::File::create(song_path)?;
+        file.write_all(yaml.as_bytes())?;
+
+
+        Ok(())
+    }
+    fn get_title_from_yaml(yaml: &str) -> Option<String> {
+        let keyword = "title: ";
+        let start_index = yaml.find(keyword)? + keyword.len();
+        let end_index = yaml[start_index..].find("\n")? + start_index;
+        
+        Some(yaml[start_index..end_index].to_string())
+    }
+    fn get_artist_from_yaml(yaml: &str) -> Option<String> {
+        let keyword = "artist: ";
+        let start_index = yaml.find(keyword)? + keyword.len();
+        let end_index = yaml[start_index..].find("\n")? + start_index;
+        
+        Some(yaml[start_index..end_index].to_string())
+    }
+    fn get_free_path(mut path: std::path::PathBuf, name: &str) -> std::path::PathBuf {
+        let mut counter = 1;
+        while path.exists() {
+            path.set_file_name(&format!("{}({})", name, counter));
+            counter += 1;
+        }
+    
+        return path
+    }
 }

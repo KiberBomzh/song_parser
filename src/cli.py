@@ -1,14 +1,21 @@
-from sys import argv
+import argparse
 
 from src.parsers import akkords_pro, amdm_ru
+from song_parser_lib import can_save, save
+
+
+parser = argparse.ArgumentParser(description = "Cli tool for scraping songs.")
+parser.add_argument('url', help = "Song's url")
+parser.add_argument('-s', '--save', action = 'store_true', help = "Save song in library")
 
 
 def main():
-    if len(argv) == 1:
-        print("You need to use an url as first argument!")
+    args = parser.parse_args()
+    if args.save and not can_save():
+        print("Cannot save songs on android!")
         return 1
 
-    url: str = argv[1]
+    url: str = args.url
     if url.startswith('https://'):
         url = url[len('https://'):]
     elif url.startswith('http://'):
@@ -23,7 +30,11 @@ def main():
         print("Unknown url!")
         return 1
 
-    print(yaml, flush = True)
+
+    if args.save:
+        save(yaml)
+    else:
+    	print(yaml, flush = True)
 
 
 if __name__ == '__main__':
