@@ -17,7 +17,7 @@ jobs:
               uses: dtolnay/rust-toolchain@stable
 
             - name: Setup Python
-              uses: astral-sh/setup-uv
+              uses: astral-sh/setup-uv@v1
 
             - name: Build
               run: uv run pyinstaller song-parser_linux.spec
