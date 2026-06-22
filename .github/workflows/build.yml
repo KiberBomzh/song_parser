@@ -20,7 +20,7 @@ jobs:
               uses: dtolnay/rust-toolchain@stable
 
             - name: Setup Python
-              uses: astral-sh/setup-uv@3cdf50e0924f1ace7a92ddbac98b12a958b87688
+              uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
             - name: Check uv
               run: uv self version
